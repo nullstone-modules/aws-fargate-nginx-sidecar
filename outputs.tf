@@ -3,15 +3,28 @@ output "sidecars" {
     {
       name   = "nginx"
       image  = "nginx:stable-alpine"
-      cpu    = var.cpu
-      memory = var.memory
-      env = [
+      environment = [
         {
           name  = "WEBAPP_ADDR"
           value = var.webapp_addr
         }
       ]
       volumesFrom = [{ sourceContainer = var.app_metadata["main_container"] }]
+
+      portMappings = var.app_metadata["service_port"] == 0 ? [] : [
+        {
+          protocol      = "tcp"
+          containerPort = var.app_metadata["service_port"]
+          hostPort      = var.app_metadata["service_port"]
+        }
+      ]
+
+      dependsOn = [
+        {
+          containerName = var.app_metadata["main_container"]
+          condition     = "START"
+        }
+      ]
     }
   ]
 }
@@ -19,16 +32,16 @@ output "sidecars" {
 output "mount_points" {
   value = [
     {
-      sourceVolume  = "app-public"
-      containerPath = "/app/public"
+      name = "app-public"
+      path = "/app/public"
     },
     {
-      sourceVolume  = "nginx-confd"
-      containerPath = "/etc/nginx/conf.d"
+      name = "nginx-confd"
+      path = "/etc/nginx/conf.d"
     },
     {
-      sourceVolume  = "nginx-templates"
-      containerPath = "/etc/nginx/templates"
+      name = "nginx-templates"
+      path = "/etc/nginx/templates"
     }
   ]
 }
