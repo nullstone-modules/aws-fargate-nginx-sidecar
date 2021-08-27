@@ -1,30 +1,31 @@
 output "sidecars" {
+  // Using jsonencode because all map values must be of the same type
   value = [
     {
       name   = "nginx"
       image  = "nginx:stable-alpine"
-      environment = [
+      environment = jsonencode([
         {
           name  = "WEBAPP_ADDR"
           value = var.webapp_addr
         }
-      ]
-      volumesFrom = [{ sourceContainer = var.app_metadata["main_container"] }]
+      ])
+      volumesFrom = jsonencode([{ sourceContainer = var.app_metadata["main_container"] }])
 
-      portMappings = var.app_metadata["service_port"] == 0 ? [] : [
+      portMappings = jsonencode(var.app_metadata["service_port"] == 0 ? [] : [
         {
           protocol      = "tcp"
           containerPort = var.app_metadata["service_port"]
           hostPort      = var.app_metadata["service_port"]
         }
-      ]
+      ])
 
-      dependsOn = [
+      dependsOn = jsonencode([
         {
           containerName = var.app_metadata["main_container"]
           condition     = "START"
         }
-      ]
+      ])
     }
   ]
 }
