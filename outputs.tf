@@ -2,8 +2,8 @@ output "sidecars" {
   // Using jsonencode because all map values must be of the same type
   value = [
     {
-      name   = "nginx"
-      image  = "nginx:stable-alpine"
+      name  = "nginx"
+      image = "nginx:stable-alpine"
       environment = jsonencode([
         {
           name  = "WEBAPP_ADDR"
@@ -12,6 +12,7 @@ output "sidecars" {
       ])
       volumesFrom = jsonencode([{ sourceContainer = var.app_metadata["main_container"] }])
 
+      owns_service_port = true
       portMappings = jsonencode(var.app_metadata["service_port"] == 0 ? [] : [
         {
           protocol      = "tcp"
