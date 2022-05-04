@@ -3,7 +3,7 @@ output "sidecars" {
   value = [
     {
       name  = "nginx"
-      image = "nginx:stable-alpine"
+      image = "public.ecr.aws/nginx/nginx:stable-alpine"
       environment = jsonencode([
         {
           name  = "WEBAPP_ADDR"
