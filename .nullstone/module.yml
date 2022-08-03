@@ -1,0 +1,14 @@
+org_name: nullstone
+name: aws-fargate-nginx-sidecar
+friendly_name: Nginx Sidecar for Fargate Service
+description: Adds nginx as a sidecar to web apps that want to serve static assets efficiently.
+category: capability
+subcategory: sidecars
+provider_types:
+    - aws
+platform: ecs
+subplatform: fargate
+type: ""
+appCategories:
+    - container
+is_public: true
